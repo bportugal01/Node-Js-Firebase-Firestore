@@ -1,0 +1,194 @@
+<div class="container text-center my-4">
+    <nav class="navbar bg-primary navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">SISTEMA WEB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="/">Cadastrar</a>
+                    <a class="nav-link" href="/consulta">Consultar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="custom-bg">
+        <div class="container mt-4">
+            {{#if data.length}}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Telefone</th>
+                            <th>Origem</th>
+                            <th>Data Contato</th>
+                            <th>Observação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each data}}
+                        <tr>
+                            <td>{{this.nome}}</td>
+                            <td>{{this.telefone}}</td>
+                            <td>{{this.origem}}</td>
+                            <td>{{this.data_contato}}</td>
+                            <td>{{this.observacao}}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal" data-bs-id="{{this.id}}" data-bs-nome="{{this.nome}}"
+                                    data-bs-telefone="{{this.telefone}}" data-bs-origem="{{this.origem}}"
+                                    data-bs-data-contato="{{this.data_contato}}"
+                                    data-bs-observacao="{{this.observacao}}">Editar</button>
+                                <a href="/excluir/{{this.id}}" class="btn btn-danger ">Excluir</a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <b>
+                    <p class="text-center">Não possui agendamentos</p>
+                </b>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Adjusted to modal-lg for medium and large screens -->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Agendamento</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 text-start">
+                                <label class="form-label">Nome:</label>
+                                <input type="text" name="nome" class="form-control" id="edit-nome">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 text-start">
+                                <label class="form-label">Telefone:</label>
+                                <input type="text" name="telefone" class="form-control" id="edit-telefone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 text-start">
+                                <label class="form-label">Origem:</label>
+                                <select name="origem" class="form-select" id="edit-origem">
+                                    <option value="celular">Celular</option>
+                                    <option value="whatsapp">Whatsapp</option>
+                                    <option value="telefone_fixo">Telefone Fixo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 text-start">
+                                <label class="form-label">Data do Contato:</label>
+                                <input type="date" name="data_contato" class="form-control" id="edit-data-contato">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3 text-start">
+                                <label class="form-label">Observação:</label>
+                                <textarea name="observacao" class="form-control" id="edit-observacao"
+                                    style="height: 100px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <button type="submit" class="btn btn-dark">Atualizar</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-bg {
+        background-color: #d7e2ed;
+        padding: 20px;
+    }
+</style>
+
+<script>
+    const exampleModal = document.getElementById('exampleModal');
+    exampleModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const id = button.getAttribute('data-bs-id');
+        const nome = button.getAttribute('data-bs-nome');
+        const telefone = button.getAttribute('data-bs-telefone');
+        const origem = button.getAttribute('data-bs-origem');
+        const dataContato = button.getAttribute('data-bs-data-contato');
+        const observacao = button.getAttribute('data-bs-observacao');
+
+        const modalTitle = exampleModal.querySelector('.modal-title');
+        const form = document.getElementById('editForm');
+
+        modalTitle.textContent = `Editar Agendamento`;
+        form.action = `/atualizar/${id}`;
+        document.getElementById('edit-nome').value = nome;
+        document.getElementById('edit-telefone').value = telefone;
+        document.getElementById('edit-origem').value = origem;
+        document.getElementById('edit-data-contato').value = dataContato;
+        document.getElementById('edit-observacao').value = observacao;
+    });
+
+    // Função que bloqueia letras 
+    function blockletras(keypress) {
+        // campo senha - bloqueia letras                               
+        if (keypress >= 48 && keypress <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function blockNumbers(keypress) {
+        // Campo onde você deseja bloquear números
+        if (keypress < 48 || keypress > 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Função para aplicar a máscara de telefone
+    function mascaraTelefone(event) {
+        let input = event.target;
+        let value = input.value.replace(/\D/g, '');
+        let formattedValue = '';
+
+        if (value.length > 10) {
+            formattedValue = `(${value.substring(0, 2)}) ${value.substring(2, 7)}-${value.substring(7, 11)}`;
+        } else if (value.length > 5) {
+            formattedValue = `(${value.substring(0, 2)}) ${value.substring(2, 6)}-${value.substring(6, 10)}`;
+        } else if (value.length > 2) {
+            formattedValue = `(${value.substring(0, 2)}) ${value.substring(2, 6)}`;
+        } else {
+            formattedValue = value;
+        }
+
+        input.value = formattedValue;
+    }
+
+    // Adiciona o evento input ao campo de telefone para aplicar a máscara
+    document.getElementById('edit-telefone').addEventListener('input', mascaraTelefone);
+</script>
