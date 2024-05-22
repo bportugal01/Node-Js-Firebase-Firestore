@@ -103,21 +103,15 @@
         }).then(function (response) {
             if (response.ok) {
                 document.getElementById('alerta').style.display = 'block'; // Mostra o alerta de sucesso
+                setTimeout(function() {
+                    document.getElementById('alerta').style.display = 'none'; // Oculta o alerta após 3 segundos
+                }, 3000);
                 document.getElementById('form-cadastro').reset(); // Limpa o formulário
             }
         });
     });
 
-       // Função que bloqueia letras 
-    function blockletras(keypress) {
-        // campo senha - bloqueia letras                               
-        if (keypress >= 48 && keypress <= 57) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    // Função que bloqueia letras 
     function blockNumbers(keypress) {
         // Campo onde você deseja bloquear números
         if (keypress < 48 || keypress > 57) {
